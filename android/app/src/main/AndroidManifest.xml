@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.challenge">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.challenge">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,7 +13,8 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -30,9 +32,15 @@
       <receiver android:name="com.staltz.reactnativeandroidlocalnotification.NotificationPublisher" />       <!-- <- Add this line -->
       <receiver android:name="com.staltz.reactnativeandroidlocalnotification.SystemBootEventReceiver">       <!-- <- Add this line -->
         <intent-filter>                                                                   <!-- <- Add this line -->
-          <action android:name="android.intent.action.BOOT_COMPLETED"></action>           <!-- <- Add this line -->
+            <action android:name="android.intent.action.BOOT_COMPLETED" />           <!-- <- Add this line -->
         </intent-filter>                                                                  <!-- <- Add this line -->
       </receiver>                                                                         <!-- <- Add this line -->
+
+        <receiver android:name=".ReplyReceiver"  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.Reply" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -10,8 +10,8 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.staltz.reactnativeandroidlocalnotification.NotificationPackage; 
+/*Custom package to notify*/
+import com.challenge.CustomNotifyPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -25,7 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new NotificationPackage() 
+          new CustomNotifyPackage()
       );
     }
 

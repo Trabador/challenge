@@ -4,9 +4,10 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Button, Alert} from 'react-native';
-/*dependency to create local notifications */
-import Notification from 'react-native-android-local-notification';
+import {StyleSheet, Text, TextInput, View, Button, Alert, DeviceEventEmitter} from 'react-native';
+
+//Custom native module to notify
+import NotificationCustom from './customModules/NotifyCustom';
 
 export default class App extends Component {
   constructor(){
@@ -18,18 +19,17 @@ export default class App extends Component {
   }
 
   componentWillMount(){
-    /*listens for notification press actions */
-    Notification.addListener('press', (e) => {
-      switch (e.action) {
-        case 'RESPOND':
-          //e.payload contains the data that was created with the notification
-          this.setState({ message: `Greetings ${e.payload.user}!!` })
-          break;
-        default:
-          this.setState({message: '', user: ''})
-          break;
-      }
+    //initialize notifiy channel
+    NotificationCustom.createChannel();
+    //Listens for reply response in notification
+    this.subscription = DeviceEventEmitter.addListener('Replied', (e) => {
+      this.setState({ message: e.Reply});
     });
+  }
+
+  componentWillUnmount() {
+    //Removes listener for reply
+    this.subscription.remove();
   }
 
   render() {
@@ -44,14 +44,10 @@ export default class App extends Component {
 
   handlePress = () => {
     if(this.state.user !== ''){
-      //this is the configuration object for the notification
-      const notificationConfig = {
-        subject: 'New Notification!', 
-        message: 'This is a new notification created via button press',
-        action: 'RESPOND',
-        payload: {user: this.state.user}
-      };
-      Notification.create(notificationConfig);//Create notification with the config 
+      //Creates notification
+      let title = `Notify by ${this.state.user}`;
+      let contet = `This is a custom notification created by ${this.state.user}`;
+      NotificationCustom.notifyLocal(title, contet);
     } else {
       Alert.alert('Please insert a name');
     }
