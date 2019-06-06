@@ -36,7 +36,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <TextInput style={styles.input} placeholder='Insert a name'  onChangeText={(user) => this.setState({user})} />
-        <Button title='Create Notification' onPress={this.handlePress}/>
+        <Button title='Create Notification pruebas' onPress={this.handlePress}/>
         {this.state.message !== ''? <Text style={styles.message}>{this.state.message}</Text>: null} 
       </View>
     );

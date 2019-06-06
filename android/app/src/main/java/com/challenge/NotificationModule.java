@@ -1,7 +1,14 @@
 package com.challenge;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -21,12 +28,14 @@ import android.app.PendingIntent;
 public class NotificationModule extends ReactContextBaseJavaModule {
     private static final String CHANNEL_ID = "channel_custom_notification";
     private static ReactContext mReactContext;
-    private static final String TXT_REPLY = "text_reply";
+    public static final String TXT_REPLY = "text_reply";
 
     public NotificationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+
     }
+
 
     @Override
     public String getName() {
@@ -44,6 +53,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         Intent intent = new Intent(mReactContext, ReplyReceiver.class);
 
+        //Intent intent = new Intent(mReactContext, MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         PendingIntent replyPendingIntent = PendingIntent.getBroadcast(mReactContext, 0, intent,
                 0);
 
@@ -51,16 +63,19 @@ public class NotificationModule extends ReactContextBaseJavaModule {
                 "Reply", replyPendingIntent).addRemoteInput(remoteInput).build();
 
         builder.addAction(action);
+        //builder.setContentIntent(PendingIntent.getActivity(mReactContext,0,intent,0));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mReactContext);
         notificationManager.notify(1, builder.build());
+
+
     }
 
     /*gets the data from the receiver*/
-    public static void sendReplyData(String replyText) {
+    public static void sendReplyData(String replyText, ReactContext context) {
         final WritableMap params = Arguments.createMap();
         params.putString("Reply", replyText);
-        sendEvent(mReactContext, "Replied", params);
+        sendEvent(context, "Replied", params);
     }
 
     @ReactMethod
@@ -75,4 +90,5 @@ public class NotificationModule extends ReactContextBaseJavaModule {
     private static void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
+
 }
